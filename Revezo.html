@@ -1,0 +1,439 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Revezo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: barra lateral escura com as áreas do cuidado; à direita, a área de trabalho em cartões. No celular, a barra vira navegação inferior. */
+:root{
+  --bg:#EEF2EF; --surface:#FFFFFF; --sunk:#F2F5F3; --ink:#16302C; --muted:#5C716C; --line:#DCE4E0;
+  --brand:#1F6F5F; --brand-ink:#FFFFFF; --brand-soft:#DCEEE8; --side:#132A26; --side-ink:#E4EFEB; --side-muted:#8FA8A1; --side-hover:#1D3B36;
+  --warn:#A85A08; --warn-soft:#FBE9CF; --bad:#C0392F; --bad-soft:#FBE1DE; --ok:#1F7A4D; --ok-soft:#DDF1E5;
+  --m1:#D9534A; --m2:#2E6FB7; --m3:#8A4FB0; --m4:#C98A12; --m0:#1F6F5F;
+  --display:"Bricolage Grotesque","Trebuchet MS",sans-serif; --body:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1816; --surface:#17241F; --sunk:#111D1A; --ink:#E7F0EC; --muted:#9DB2AC; --line:#293A36;
+  --brand:#5CC5AC; --brand-ink:#0C1D19; --brand-soft:#1D3932; --side:#0A1311; --side-ink:#E4EFEB; --side-muted:#8FA8A1; --side-hover:#172925;
+  --warn:#F2B25C; --warn-soft:#3A2B14; --bad:#F0827A; --bad-soft:#3D1D1A; --ok:#6FD19B; --ok-soft:#173326;
+  --m1:#F0827A; --m2:#7FB2EC; --m3:#C095E0; --m4:#E7B655; --m0:#5CC5AC; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1816; --surface:#17241F; --sunk:#111D1A; --ink:#E7F0EC; --muted:#9DB2AC; --line:#293A36;
+  --brand:#5CC5AC; --brand-ink:#0C1D19; --brand-soft:#1D3932; --side:#0A1311; --side-ink:#E4EFEB; --side-muted:#8FA8A1; --side-hover:#172925;
+  --warn:#F2B25C; --warn-soft:#3A2B14; --bad:#F0827A; --bad-soft:#3D1D1A; --ok:#6FD19B; --ok-soft:#173326;
+  --m1:#F0827A; --m2:#7FB2EC; --m3:#C095E0; --m4:#E7B655; --m0:#5CC5AC; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+button,input,select{font-family:inherit}
+svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.app{display:grid;grid-template-columns:236px minmax(0,1fr);height:100%}
+.side{background:var(--side);color:var(--side-ink);display:flex;flex-direction:column;padding:20px 12px 14px;gap:18px;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:10px;padding:0 8px;font:700 24px var(--display);letter-spacing:-.02em}
+.logo span{display:flex}.logo i{width:16px;height:16px;border-radius:50%;border:2px solid var(--side);margin-left:-6px}.logo i:first-child{margin-left:0}
+.who-card{background:var(--side-hover);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:center}
+.who-card b{display:block;font-size:14px}.who-card small{color:var(--side-muted);font-size:12px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav h4{font:700 11px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--side-muted);margin:10px 10px 4px}
+.nav button{display:flex;align-items:center;gap:11px;border:0;background:transparent;color:var(--side-ink);padding:9px 10px;border-radius:10px;font:600 14px var(--body);cursor:pointer;text-align:left}
+.nav button:hover{background:var(--side-hover)}
+.nav button[aria-current="page"]{background:var(--brand);color:var(--brand-ink)}
+.nav .n{margin-left:auto;background:var(--m1);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px}
+.side .foot{margin-top:auto;display:flex;flex-direction:column;gap:8px}
+.side .foot label{font:700 11px var(--body);letter-spacing:.1em;text-transform:uppercase;color:var(--side-muted);padding:0 8px}
+.switch{display:flex;gap:6px;padding:0 6px;flex-wrap:wrap}
+.switch button{border:2px solid transparent;background:transparent;border-radius:50%;padding:2px;cursor:pointer}
+.switch button[aria-pressed="true"]{border-color:var(--side-ink)}
+.main{display:flex;flex-direction:column;min-width:0;height:100%;position:relative}
+.bar{display:flex;align-items:center;gap:10px;padding:14px 28px;border-bottom:1px solid var(--line);background:var(--surface)}
+.bar h1{font:700 24px var(--display);letter-spacing:-.01em;margin:0;line-height:1.1}
+.bar .sub{color:var(--muted);font-size:13px}
+.bar .sp{flex:1;min-width:0}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font:600 14px var(--body);cursor:pointer;white-space:nowrap}
+.pill.sos{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.pill.dark{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.pill.sm{padding:5px 11px;font-size:13px}
+.icon-btn{position:relative;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:50%;width:40px;height:40px;display:grid;place-items:center;cursor:pointer;flex:none}
+.icon-btn b{position:absolute;top:-4px;right:-4px;background:var(--m1);color:#fff;font-size:11px;border-radius:999px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 4px}
+.view{flex:1;overflow-y:auto;padding:24px 28px 40px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(12,minmax(0,1fr));align-items:start;max-width:1180px}
+.c8{grid-column:span 8}.c7{grid-column:span 7}.c5{grid-column:span 5}.c4{grid-column:span 4}.c3{grid-column:span 3}
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card>h3{font:700 16px var(--display);margin:0;display:flex;align-items:baseline;gap:8px;justify-content:space-between}
+.card>h3 small{font:600 12px var(--body);color:var(--muted);text-align:right}
+.lbl{font:700 11px var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)} .sm{font-size:13px} .m0{margin:0}
+.av{width:30px;height:30px;border-radius:50%;display:inline-grid;place-items:center;color:#fff;font:700 13px var(--body);flex:none}
+.av.lg{width:46px;height:46px;font-size:18px}.av.xs{width:22px;height:22px;font-size:11px}
+.hero{background:var(--brand);color:var(--brand-ink);border:0;flex-direction:row;align-items:center;gap:18px;flex-wrap:wrap}
+.hero h2{font:700 26px var(--display);margin:0;line-height:1.1;letter-spacing:-.01em;text-wrap:balance}
+.hero p{margin:6px 0 0;opacity:.9}
+.hero .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.hero .pill{background:transparent;border-color:currentColor;color:inherit}
+.hero .pill.solid{background:var(--brand-ink);color:var(--brand);border-color:var(--brand-ink)}
+.ring{position:relative;width:92px;height:92px;flex:none}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font:700 20px var(--display)}
+.alerts{display:flex;flex-direction:column;gap:8px}
+.al{display:flex;gap:10px;align-items:center;border-radius:12px;padding:10px 12px;font-weight:600;font-size:14px;background:var(--warn-soft);color:var(--warn)}
+.al.bad{background:var(--bad-soft);color:var(--bad)}.al.ok{background:var(--ok-soft);color:var(--ok)}
+.al span{flex:1;min-width:0}
+.al button{border:0;border-radius:999px;padding:5px 11px;font:700 12px var(--body);cursor:pointer;background:currentColor;flex:none}
+.al button em{font-style:normal;color:var(--surface)}
+.list{display:flex;flex-direction:column}
+.row{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);min-width:0}
+.row:last-child{border-bottom:0;padding-bottom:0}.row:first-child{padding-top:0}
+.row .t{font-variant-numeric:tabular-nums;font-weight:700;width:46px;flex:none}
+.row .d{flex:1;min-width:0}.row .d b{display:block;font-weight:600}.row .d span{font-size:13px;color:var(--muted)}
+.row.done .d b{text-decoration:line-through;color:var(--muted)}
+.ty{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;background:var(--sunk);color:var(--brand)}
+.chk{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:transparent;cursor:pointer;flex:none;color:transparent;font-weight:700;font-size:14px}
+.row.done .chk{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.money{font-variant-numeric:tabular-nums;font-weight:700;flex:none}
+.stat{display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat b{font:700 24px var(--display);line-height:1.15;font-variant-numeric:tabular-nums}
+.stat b small{font:600 13px var(--body);color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:14px}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 10px;font:700 12px var(--body);background:var(--sunk);color:var(--muted);border:0;white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.br{background:var(--brand-soft);color:var(--brand)}
+button.chip{cursor:pointer;padding:6px 12px;font-size:13px}button.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.bal{display:flex;flex-direction:column;gap:9px}
+.barr{display:flex;align-items:center;gap:10px;font-size:14px}
+.barr .n{width:64px;font-weight:600;flex:none}.barr .tr{flex:1;height:11px;border-radius:6px;background:var(--sunk);overflow:hidden;min-width:20px}
+.barr .tr i{display:block;height:100%;border-radius:6px}.barr .v{width:84px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);flex:none}
+.hint{background:var(--brand-soft);border-radius:12px;padding:11px 13px;font-size:14px}
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.day{background:var(--sunk);border:1.5px solid transparent;border-radius:12px;padding:8px 0;display:flex;flex-direction:column;align-items:center;gap:5px;font:600 12px var(--body);color:var(--muted);cursor:pointer}
+.day b{font:700 15px var(--display);color:var(--ink)}
+.day.today{border-color:var(--ink)}
+form.add{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+form.add input,form.add select{flex:1 1 120px;min-width:0;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:11px;padding:9px 11px;font:500 14px var(--body)}
+form.add .narrow{flex:0 1 112px}
+.btn{background:var(--ink);color:var(--surface);border:0;border-radius:11px;padding:10px 14px;font:700 14px var(--body);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.entry{background:var(--sunk);border-radius:14px;padding:12px 14px;display:flex;gap:10px}
+.entry p{margin:2px 0 6px}.entry small{color:var(--muted)}
+.med{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 14px;padding:14px 0;border-bottom:1px solid var(--line);align-items:center}
+.med:last-child{border-bottom:0;padding-bottom:0}.med:first-child{padding-top:0}
+.med h4{margin:0;font:700 16px var(--display)}
+.dots{display:flex;gap:4px}.dots i{width:14px;height:14px;border-radius:4px;background:var(--ok)}.dots i.x{background:var(--bad)}
+.stock{height:7px;border-radius:4px;background:var(--sunk);overflow:hidden;grid-column:1/-1}.stock i{display:block;height:100%;background:var(--brand)}.stock.low i{background:var(--warn)}
+.chart{width:100%;height:auto;display:block}
+.chart text{font:600 11px var(--body);fill:var(--muted)}
+.kv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 16px;margin:0;font-size:14px}
+.kv dt{color:var(--muted)}.kv dd{margin:0;font-weight:600}
+.cups{display:flex;gap:6px;flex-wrap:wrap}
+.cup{width:30px;height:38px;border-radius:5px 5px 10px 10px;border:2px solid var(--m2);background:transparent;cursor:pointer;padding:0}
+.cup.on{background:var(--m2)}
+.moods{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center;font-size:12px;color:var(--muted)}
+.moods i{display:block;height:34px;border-radius:10px;margin-bottom:4px}
+.toggle{width:44px;height:26px;border-radius:999px;border:0;background:var(--line);position:relative;cursor:pointer;flex:none}
+.toggle::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--surface);transition:left .15s}
+.toggle[aria-checked="true"]{background:var(--brand)}.toggle[aria-checked="true"]::after{left:21px}
+pre.sum{white-space:pre-wrap;background:var(--sunk);border-radius:12px;padding:14px;margin:0;font:500 13px/1.5 var(--body)}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:11px 18px;border-radius:999px;font-weight:600;z-index:50;max-width:calc(100% - 32px);text-align:center}
+.pop{position:fixed;right:28px;top:66px;width:min(400px,calc(100% - 32px));z-index:30;box-shadow:0 20px 40px -20px rgba(0,0,0,.4)}
+.overlay{position:fixed;inset:0;background:rgba(10,20,18,.6);display:grid;place-items:center;z-index:40;padding:16px}
+.modal{background:var(--surface);border-radius:22px;padding:24px;width:min(460px,100%);display:flex;flex-direction:column;gap:14px;max-height:100%;overflow:auto}
+.modal h2{font:700 24px var(--display);margin:0}
+.more{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.more button{justify-content:flex-start}
+.tabbar{display:none}
+.easy{position:fixed;inset:0;background:var(--bg);z-index:35;overflow:auto;padding:24px 16px 40px}
+.easy .in{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.easy h1{font:700 38px var(--display);margin:0;line-height:1.05}
+.easy p.big{font-size:20px;margin:0;color:var(--muted)}
+.big-btn{border-radius:22px;padding:22px;font:700 22px var(--body);cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;width:100%;background:var(--surface);color:var(--ink);border:2px solid var(--line)}
+.big-btn.go{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.big-btn.help{background:var(--bad);color:var(--surface);border-color:var(--bad)}
+.big-btn svg.i{width:30px;height:30px}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.three .big-btn{flex-direction:column;align-items:center;text-align:center;font-size:18px;padding:18px 8px}
+.three .big-btn[aria-pressed="true"]{border-color:var(--ink);background:var(--brand-soft)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .bar{padding:12px 16px}.bar h1{font-size:21px}.bar .hide-s{display:none}
+  .view{padding:16px 16px 100px}
+  .c8,.c7,.c5,.c4,.c3{grid-column:span 12}
+  .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:20}
+  .tabbar button{border:0;background:transparent;color:var(--muted);font:600 11px var(--body);padding:9px 0 10px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+  .tabbar button[aria-current="page"]{color:var(--brand)}
+  .pop{right:16px;top:60px}
+}
+@media (prefers-reduced-motion:reduce){.toggle::after{transition:none}}
+</style>
+
+<div class="app">
+  <aside class="side">
+    <div class="logo"><span><i style="background:var(--m1)"></i><i style="background:var(--m2)"></i><i style="background:var(--m3)"></i></span>Revezo</div>
+    <div class="who-card"><span class="av" style="background:var(--m0)">L</span><div><b>Dona Lúcia Almeida</b><small>78 anos · Família Almeida</small></div></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="foot"><label>Entrar como</label><div class="switch" id="switch"></div></div>
+  </aside>
+  <div class="main">
+    <header class="bar">
+      <div class="sp"><h1 id="ttl"></h1><div class="sub" id="sub"></div></div>
+      <button class="pill hide-s" data-a="easy">Tela da Dona Lúcia</button>
+      <button class="icon-btn" data-a="bell" aria-label="Avisos" id="bell"></button>
+      <button class="pill sos" data-a="sos">SOS</button>
+    </header>
+    <main class="view" id="view"></main>
+  </div>
+</div>
+<nav class="tabbar" id="tabbar"></nav>
+<div id="layer"></div>
+
+<script>
+const IC={home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',list:'<path d="M10 6h10M10 12h10M10 18h10"/><path d="M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/>',pill:'<rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><path d="M9.5 9.5l5 5"/>',pulse:'<path d="M3 12h4l2-6 4 12 2-6h6"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',swap:'<path d="M7 4L3 8l4 4M3 8h14M17 12l4 4-4 4M21 16H7"/>',wallet:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M16 15h2"/>',book:'<path d="M5 4h12a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2zM5 18a2 2 0 0 1 2-2h12M9 8h6"/>',smile:'<circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01"/>',shield:'<path d="M12 3l8 3v6c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/>',file:'<path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.8a3.5 3.5 0 0 1 0 6.4M17.5 14a6.5 6.5 0 0 1 4 6"/>',bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/>',food:'<path d="M6 3v8M4 3v5a2 2 0 0 0 4 0V3M6 11v10M17 3c-2 1-3 3.5-3 7h3zM17 3v18"/>',walk:'<circle cx="13" cy="4.5" r="1.8"/><path d="M9 21l2-6-2-3 1-4 3 1 2 3h3M11 15l3 2 1 4"/>',grid:'<path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/>',alert:'<path d="M12 4l9 16H3zM12 10v4M12 17h.01"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>'};
+const ic=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
+const P={m:{n:"Marina",c:"var(--m1)",r:"Filha · mora a 10 minutos"},p:{n:"Paulo",c:"var(--m2)",r:"Filho · mora em outra cidade"},c:{n:"Carla",c:"var(--m3)",r:"Filha · trabalha em turnos"},r:{n:"Rosa",c:"var(--m4)",r:"Cuidadora contratada"}};
+const FAM=["m","p","c"];
+const NOW=new Date(), DOW=(NOW.getDay()+6)%7;
+const DAYS=["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"], MES=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+const addD=n=>{const d=new Date(NOW);d.setDate(d.getDate()+n);return d};
+const fd=d=>d.getDate()+" "+MES[d.getMonth()];
+const longDate=NOW.toLocaleDateString("pt-BR",{weekday:"long",day:"numeric",month:"long"});
+const SECTIONS=[["Dia a dia",[["inicio","Início","home"],["rotina","Rotina","list"],["remedios","Remédios","pill"],["escala","Escala","swap"]]],["Saúde",[["saude","Sinais de saúde","pulse"],["agenda","Consultas","cal"],["companhia","Companhia","smile"],["casa","Casa segura","shield"]]],["Família",[["gastos","Gastos","wallet"],["diario","Diário","book"],["docs","Documentos","file"],["familia","Família","users"]]]];
+const TITLE={};SECTIONS.forEach(g=>g[1].forEach(s=>TITLE[s[0]]=s[1]));
+const TYPES={remedio:["Remédio","pill"],refeicao:["Refeição","food"],medida:["Medição","pulse"],atividade:["Atividade","walk"],consulta:["Consulta","cal"],outro:["Outro","check"]};
+const S={me:"m",tab:"inicio",easy:false,pop:null,sos:false,metric:"pa",balBy:"dias",tag:"Todos",water:3,moodToday:null,callAsk:null,warned:false,toast:null,
+  week:["m","m","m","p","m","c","m"], next:["m","p","m","m","p","c","c"], base:{m:13,p:5,c:5}, tasksBase:{m:61,p:17,c:14},
+  swaps:[{from:"c",day:5,why:"Viagem a trabalho no sábado"}],
+  tasks:[
+    {t:"08:00",b:"Losartana 50 mg",s:"1 comprimido, em jejum",ty:"remedio",med:0,by:null},
+    {t:"08:30",b:"Café da manhã",s:"Pão integral, fruta, sem açúcar",ty:"refeicao",by:"m"},
+    {t:"09:00",b:"Metformina 850 mg",s:"1 comprimido, após o café",ty:"remedio",med:1,by:"m"},
+    {t:"10:00",b:"Medir a pressão",s:"Sentada, depois de 5 min de descanso",ty:"medida",by:"m"},
+    {t:"12:30",b:"Almoço",s:"Pouco sal, bastante legume",ty:"refeicao",by:"m"},
+    {t:"14:00",b:"Fisioterapia",s:"Clínica Movimento · levar o exame do joelho",ty:"consulta",by:null},
+    {t:"16:30",b:"Caminhada leve",s:"15 minutos na praça, com tênis fechado",ty:"atividade",by:null},
+    {t:"20:00",b:"Sinvastatina 20 mg",s:"1 comprimido, depois do jantar",ty:"remedio",med:2,by:null},
+    {t:"21:00",b:"Metformina 850 mg",s:"1 comprimido, após o jantar",ty:"remedio",med:1,by:null}],
+  meds:[
+    {n:"Losartana",dose:"50 mg",uso:"Pressão alta",h:"08:00",qtd:4,dia:1,adh:[1,1,1,1,0,1,1],rx:18},
+    {n:"Metformina",dose:"850 mg",uso:"Diabetes tipo 2",h:"09:00 e 21:00",qtd:38,dia:2,adh:[1,1,1,1,1,1,1],rx:64},
+    {n:"Sinvastatina",dose:"20 mg",uso:"Colesterol",h:"20:00",qtd:21,dia:1,adh:[1,1,0,1,1,1,1],rx:64},
+    {n:"Vitamina D",dose:"2.000 UI",uso:"Ossos",h:"12:30",qtd:52,dia:1,adh:[1,1,1,1,1,0,1],rx:120}],
+  vit:{pa:{n:"Pressão",u:"mmHg",v:[128,131,126,134,129,133,137,130,128,135,138,132,136,142],v2:[82,84,80,85,81,84,86,82,80,85,88,83,86,90],lo:90,hi:140,min:60,max:160},
+       gl:{n:"Glicemia",u:"mg/dL",v:[112,118,109,121,115,108,124,117,111,119,126,114,110,116],lo:70,hi:130,min:60,max:160},
+       pe:{n:"Peso",u:"kg",v:[64.8,64.7,64.9,64.6,64.5,64.6,64.4,64.3,64.4,64.2,64.1,64.2,64.0,63.9],lo:60,hi:68,min:58,max:70},
+       so:{n:"Sono",u:"h",v:[6.5,7,6,7.5,7,5.5,6.5,7,7.5,6,5,6.5,7,6.5],lo:6,hi:9,min:3,max:10}},
+  appts:[
+    {d:0,h:"14:00",b:"Fisioterapia",doc:"Dra. Helena Prado",loc:"Clínica Movimento",by:"m",q:["O exercício em casa está certo?"]},
+    {d:2,h:"09:30",b:"Cardiologista",doc:"Dr. Renato Vasques",loc:"Hospital São Lucas, sala 204",by:null,q:["A pressão subiu na última semana. Ajustar a Losartana?","Pode voltar a caminhar 30 minutos?"]},
+    {d:9,h:"15:00",b:"Exame de sangue",doc:"Laboratório Vida",loc:"Unidade Centro · jejum de 8 h",by:"p",q:[]},
+    {d:23,h:"11:00",b:"Oftalmologista",doc:"Dra. Bianca Leme",loc:"Clínica Visão",by:null,q:["Avaliar catarata do olho esquerdo"]}],
+  costs:[
+    {b:"Farmácia",v:186.40,by:"m",cat:"Remédios"},{b:"Fisioterapia (4 sessões)",v:320,by:"m",cat:"Saúde"},
+    {b:"Rosa · 8 diárias",v:960,by:"p",cat:"Cuidadora"},{b:"Fraldas e higiene",v:142.90,by:"p",cat:"Casa"},
+    {b:"Táxi para a consulta",v:48,by:"c",cat:"Transporte"},{b:"Barra de apoio do banheiro",v:219,by:"c",cat:"Casa"},{b:"Feira da semana",v:134.50,by:"m",cat:"Alimentação"}],
+  notes:[
+    {by:"m",w:"Hoje, 10:12",tag:"Saúde",x:"Pressão 14 por 9 de manhã. Dormiu bem e tomou o café inteiro."},
+    {by:"r",w:"Ontem, 17:05",tag:"Humor",x:"Estava animada, fizemos o álbum de fotos e ela lembrou o nome de todos os primos."},
+    {by:"p",w:"Ontem, 19:40",tag:"Saúde",x:"Reclamou de dor no joelho direito ao subir a escada. Avisar a fisioterapeuta."},
+    {by:"c",w:"Sábado",tag:"Recado médico",x:"Dra. Helena pediu gelo no joelho por 15 minutos, duas vezes ao dia."},
+    {by:"m",w:"Sexta",tag:"Alimentação",x:"Almoçou pouco. Preferiu sopa no jantar."}],
+  moods:[3,3,2,3,3,2,3], contacts:[{by:"m",k:"Visita",w:"Hoje"},{by:"p",k:"Ligação",w:"Ontem"},{by:"r",k:"Visita",w:"Ontem"},{by:"c",k:"Chamada de vídeo",w:"Sábado"}],
+  ideas:[["Álbum de fotos da família","Conversar sobre as fotos estimula a memória",false],["Ligar para a amiga Zélia","Ela perguntou da Lúcia na semana passada",false],["Palavras cruzadas","20 minutos depois do almoço",false],["Regar as plantas da varanda","Movimento leve e rotina",true]],
+  home:[["Tapetes soltos retirados ou fixados",true],["Barra de apoio no box e ao lado do vaso",true],["Luz noturna no corredor e no banheiro",false],["Tapete antiderrapante no box",true],["Fios e objetos fora do caminho",true],["Cama e poltrona na altura dos joelhos",true],["Corrimão dos dois lados da escada",false],["Calçado fechado e firme dentro de casa",true],["Itens de uso diário ao alcance das mãos",true],["Telefone ao alcance da cama",false]],
+  falls:[{w:"12 ago",x:"Escorregou no banheiro, sem ferimentos"}],
+  docs:[["Receita · Losartana",18],["Receita · Metformina e Sinvastatina",64],["Carteirinha do plano Vida Plena",210],["Exame de sangue · setembro",null],["Laudo do joelho direito",null],["RG e CPF",null]],
+  members:[["m","Administradora"],["p","Familiar"],["c","Familiar"],["r","Não vê os gastos"]],
+  notif:{"Remédio sem confirmação":true,"Estoque de remédio acabando":true,"Consulta sem acompanhante":true,"Peso do cuidado desequilibrado":true,"Resumo semanal por e-mail":false},
+  feed:[["m","mediu a pressão","há 20 min"],["r","registrou uma visita","ontem"],["p","lançou Rosa · 8 diárias","ontem"],["c","pediu troca de turno","há 2 dias"]]
+};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const av=(k,cls)=>`<span class="av ${cls||""}" style="background:${P[k].c}" title="${esc(P[k].n)}">${esc(P[k].n[0])}</span>`;
+const brl=v=>"R$ "+v.toFixed(2).replace(".",",").replace(/\B(?=(\d{3})+(?!\d))/g,".");
+const num=v=>String(v).replace(".",",");
+const last=a=>a[a.length-1];
+let toastT; function toast(m){clearTimeout(toastT);S.toast=m;toastT=setTimeout(()=>{S.toast=null;paintLayer()},2600)}
+const log=(k,x)=>S.feed.unshift([k,x,"agora"]);
+const sortTasks=()=>S.tasks.sort((a,b)=>a.t.localeCompare(b.t));
+
+const doneN=()=>S.tasks.filter(t=>t.by).length;
+function shares(){
+  if(S.balBy==="dias"){const d={...S.base};S.week.forEach(k=>d[k]++);return {d,u:"dias"}}
+  if(S.balBy==="tarefas"){const d={...S.tasksBase};S.tasks.forEach(t=>{if(t.by&&d[t.by]!=null)d[t.by]++});return {d,u:"tarefas"}}
+  const d={m:0,p:0,c:0};S.costs.forEach(x=>d[x.by]+=x.v);return {d,u:"R$"};
+}
+function settle(){const paid={m:0,p:0,c:0};S.costs.forEach(x=>paid[x.by]+=x.v);const total=paid.m+paid.p+paid.c,each=total/3,left={},lines=[];
+  FAM.forEach(k=>left[k]=paid[k]-each);
+  const cred=FAM.filter(k=>left[k]>0.005).sort((a,b)=>left[b]-left[a]);
+  FAM.filter(k=>left[k]<-0.005).forEach(dk=>cred.forEach(ck=>{const v=Math.min(-left[dk],left[ck]);if(v>0.005){lines.push([dk,ck,v]);left[dk]+=v;left[ck]-=v}}));
+  return {total,each,lines}}
+const adh=()=>{const a=S.meds.flatMap(m=>m.adh);return Math.round(a.reduce((x,y)=>x+y,0)/a.length*100)};
+const lastPA=()=>[last(S.vit.pa.v),last(S.vit.pa.v2)];
+function alerts(){const a=[];
+  if(S.sos)a.push({c:"bad",x:"Dona Lúcia pediu ajuda agora",a:"sosok",l:"Estou indo"});
+  if(S.callAsk)a.push({c:"",x:`Dona Lúcia pediu que ${P[S.callAsk].n} ligue para ela`,a:"called",l:"Já liguei"});
+  const late=S.tasks.find(t=>t.ty==="remedio"&&!t.by&&t.t<="12:00"); if(late)a.push({c:"bad",x:`${late.b} das ${late.t} sem confirmação`,a:S.warned?null:"warn",l:S.warned?null:"Avisar a família"});
+  S.meds.forEach((m,i)=>{const d=Math.floor(m.qtd/m.dia);if(d<=7)a.push({c:"",x:`${m.n} acaba em ${d} dias`,a:"refill",i,l:"Registrar compra"})});
+  S.appts.forEach((p,i)=>{if(!p.by&&p.d<=7)a.push({c:"",x:`${p.b} em ${p.d} dias sem acompanhante`,a:"take",i,l:"Eu levo"})});
+  const pa=lastPA(); if(pa[0]>=140)a.push({c:"",x:`Pressão de hoje ${pa[0]} por ${pa[1]}, acima da faixa`,go:"saude",l:"Ver"});
+  S.swaps.forEach(s=>a.push({c:"",x:`${P[s.from].n} pediu troca do turno de ${DAYS[s.day]}`,go:"escala",l:"Ver"}));
+  return a}
+const alHtml=a=>`<div class="al ${a.c}">${ic(a.c==="bad"?"alert":"bell")}<span>${esc(a.x)}</span>${a.l?`<button ${a.a?`data-a="${a.a}"`:""} ${a.i!=null?`data-i="${a.i}"`:""} ${a.go?`data-go="${a.go}"`:""}><em>${a.l}</em></button>`:""}</div>`;
+function ring(p){const c=2*Math.PI*40;return `<div class="ring"><svg viewBox="0 0 92 92"><circle cx="46" cy="46" r="40" fill="none" stroke="currentColor" stroke-opacity=".22" stroke-width="9"/><circle cx="46" cy="46" r="40" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c*p} ${c}"/></svg><b>${Math.round(p*100)}%</b></div>`}
+function chart(m){const W=640,H=220,L=38,R=12,T=14,B=28,n=m.v.length,x=i=>L+(W-L-R)*i/(n-1),y=v=>T+(H-T-B)*(1-(Math.min(m.max,Math.max(m.min,v))-m.min)/(m.max-m.min));
+  const path=a=>a.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+" "+y(v).toFixed(1)).join(" ");
+  const ticks=[m.min,(m.min+m.max)/2,m.max];
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${m.n} nos últimos 14 dias">
+  <rect x="${L}" y="${y(m.hi)}" width="${W-L-R}" height="${y(m.lo)-y(m.hi)}" fill="var(--brand-soft)" rx="6"/>
+  ${ticks.map(t=>`<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)"/><text x="${L-8}" y="${y(t)+4}" text-anchor="end">${num(t)}</text>`).join("")}
+  ${m.v2?`<path d="${path(m.v2)}" fill="none" stroke="var(--m2)" stroke-width="2.5" stroke-linejoin="round"/>`:""}
+  <path d="${path(m.v)}" fill="none" stroke="var(--m1)" stroke-width="2.5" stroke-linejoin="round"/>
+  ${m.v.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="${i===n-1?5:3}" fill="var(--m1)"/>`).join("")}
+  ${[0,Math.floor((n-1)/2),n-1].map(i=>`<text x="${x(i)}" y="${H-8}" text-anchor="${i===0?"start":i===n-1?"end":"middle"}">${i===n-1?"hoje":fd(addD(i-n+1))}</text>`).join("")}
+  <text x="${L+8}" y="${y(m.lo)-7}">faixa desejada</text></svg>`}
+function balHtml(){const {d,u}=shares(),tot=FAM.reduce((s,k)=>s+d[k],0),top=FAM.slice().sort((a,b)=>d[b]-d[a])[0],pct=Math.round(d[top]/tot*100);
+  const what=u==="R$"?"dos gastos":u==="dias"?"dos dias":"das tarefas";
+  return `<div class="bal">${FAM.map(k=>`<div class="barr"><span class="n">${P[k].n}</span><span class="tr"><i style="width:${d[k]/tot*100}%;background:${P[k].c}"></i></span><span class="v">${u==="R$"?brl(d[k]):d[k]+" "+u}</span></div>`).join("")}</div>
+  <div class="hint">${pct>45?`<b>${P[top].n} está com ${pct}% ${what}.</b> ${u==="dias"?"Que tal alguém assumir um turno esta semana?":"Vale conversar sobre uma divisão mais leve."}`:"<b>Cuidado bem dividido.</b> Ninguém passa de 45% neste mês."}</div>`}
+const taskRow=(t,i)=>`<div class="row${t.by?" done":""}"><span class="ty">${ic(TYPES[t.ty][1])}</span><span class="t">${t.t}</span><div class="d"><b>${esc(t.b)}</b><span>${t.by?"Feito por "+esc(P[t.by].n):esc(t.s)}</span></div><button class="chk" data-a="task" data-i="${i}" aria-label="Marcar ${esc(t.b)}">✓</button></div>`;
+const apptRow=(p,i)=>`<div class="row" style="align-items:flex-start"><div class="stat" style="width:52px;text-align:center;flex:none"><b>${addD(p.d).getDate()}</b><span class="sm muted">${p.d===0?"hoje":MES[addD(p.d).getMonth()]}</span></div><div class="d"><b>${esc(p.b)} · ${p.h}</b><span>${esc(p.doc)} · ${esc(p.loc)}</span>${p.q.length?`<div class="sm" style="margin-top:6px">${p.q.map(q=>"• "+esc(q)).join("<br>")}</div>`:""}<form class="add" data-f="q" data-i="${i}" style="margin-top:8px"><input id="q${i}" placeholder="Pergunta para levar ao médico" required maxlength="90"><button class="btn ghost">Anotar</button></form></div>${p.by?av(p.by):`<button class="pill sm" data-a="take" data-i="${i}">Eu levo</button>`}</div>`;
+
+const V={
+inicio(){const on=S.week[DOW],a=alerts(),pa=lastPA(),nx=S.appts.filter(p=>p.d>0)[0],left=S.tasks.filter(t=>!t.by).slice(0,4);
+  const hr=NOW.getHours(),gr=hr<12?"Bom dia":hr<18?"Boa tarde":"Boa noite";
+  return `<div class="grid">
+  <section class="card hero c8">${ring(doneN()/S.tasks.length)}<div style="flex:1;min-width:200px"><h2>${gr}, ${esc(P[S.me].n)}. ${on===S.me?"Hoje o cuidado é seu.":"Hoje é a vez de "+P[on].n+"."}</h2><p>${doneN()} de ${S.tasks.length} tarefas da rotina feitas · ${S.water} de 8 copos de água</p><div class="acts"><button class="pill solid" data-go="rotina">Abrir a rotina</button><button class="pill" data-go="diario">Escrever no diário</button><button class="pill" data-go="escala">Trocar turno</button></div></div></section>
+  <section class="card c4"><h3>Hoje com a Dona Lúcia</h3><div class="stats"><div class="stat"><span class="lbl">Pressão</span><b>${pa[0]}<small>/${pa[1]}</small></b></div><div class="stat"><span class="lbl">Glicemia</span><b>${last(S.vit.gl.v)} <small>mg/dL</small></b></div><div class="stat"><span class="lbl">Sono</span><b>${num(last(S.vit.so.v))} <small>h</small></b></div><div class="stat"><span class="lbl">Humor</span><b>${["","Mal","Regular","Bem"][S.moodToday||last(S.moods)]}</b></div></div></section>
+  <section class="card c8"><h3>Precisa de atenção <small>${a.length} avisos</small></h3><div class="alerts">${a.length?a.map(alHtml).join(""):`<div class="al ok">${ic("check")}<span>Tudo em dia. Nenhum aviso aberto.</span></div>`}</div></section>
+  <section class="card c4"><h3>Próxima consulta</h3>${nx?`<div class="stat"><b>${esc(nx.b)}</b><span class="muted">${fd(addD(nx.d))} às ${nx.h} · ${esc(nx.doc)}</span></div><div class="sm">${nx.by?esc(P[nx.by].n)+" acompanha":"Ninguém confirmou que vai levar"}</div>`:'<p class="muted m0">Nenhuma consulta marcada.</p>'}<button class="btn ghost" data-go="agenda">Ver consultas</button></section>
+  <section class="card c5"><h3>A seguir na rotina <small>${S.tasks.length-doneN()} pendentes</small></h3><div class="list">${left.length?left.map(t=>taskRow(t,S.tasks.indexOf(t))).join(""):'<p class="muted m0">Rotina de hoje concluída.</p>'}</div></section>
+  <section class="card c4"><h3>Balança do cuidado <small>${S.balBy}</small></h3>${balHtml()}</section>
+  <section class="card c3"><h3>Atividade</h3><div class="list">${S.feed.slice(0,5).map(f=>`<div class="row">${av(f[0],"xs")}<div class="d"><span><b style="display:inline;color:var(--ink)">${esc(P[f[0]].n)}</b> ${esc(f[1])}<br>${f[2]}</span></div></div>`).join("")}</div></section>
+  </div>`},
+rotina(){const per=[["Manhã","00:00","12:00"],["Tarde","12:00","18:00"],["Noite","18:00","24:00"]];
+  return `<div class="grid"><section class="card c8"><h3>Rotina de hoje <small>${doneN()} de ${S.tasks.length} feitas</small></h3>
+  ${per.map(p=>{const l=S.tasks.filter(t=>t.t>=p[1]&&t.t<p[2]);return l.length?`<span class="lbl">${p[0]}</span><div class="list">${l.map(t=>taskRow(t,S.tasks.indexOf(t))).join("")}</div>`:""}).join("")}</section>
+  <div class="col c4">
+  <section class="card"><h3>Água <small>${S.water} de 8 copos</small></h3><div class="cups">${Array.from({length:8},(_,i)=>`<button class="cup${i<S.water?" on":""}" data-a="water" data-i="${i}" aria-label="Copo ${i+1}"></button>`).join("")}</div><p class="sm muted m0">Toque no copo quando ela beber. Com a idade, a sede diminui.</p></section>
+  <section class="card"><h3>Nova tarefa</h3><form class="add" data-f="task"><input id="tk-h" type="time" class="narrow" required value="17:00"><select id="tk-ty" class="narrow">${Object.keys(TYPES).map(k=>`<option value="${k}">${TYPES[k][0]}</option>`).join("")}</select><input id="tk-b" placeholder="O que precisa ser feito" required maxlength="50"><button class="btn">Adicionar</button></form></section>
+  <section class="card"><h3>Quem fez hoje</h3><div class="list">${Object.keys(P).map(k=>{const n=S.tasks.filter(t=>t.by===k).length;return n?`<div class="row">${av(k)}<div class="d"><b>${esc(P[k].n)}</b></div><span class="money">${n} tarefas</span></div>`:""}).join("")||'<p class="muted m0">Nada marcado ainda.</p>'}</div></section></div></div>`},
+remedios(){const shop=S.meds.filter(m=>m.qtd/m.dia<=14);
+  return `<div class="grid"><section class="card c8"><h3>Remédios em uso <small>${S.meds.length} ativos</small></h3><div>${S.meds.map((m,i)=>{const d=Math.floor(m.qtd/m.dia),low=d<=7;return `<div class="med"><div><h4>${esc(m.n)} <span class="muted" style="font:500 14px var(--body)">${esc(m.dose)}</span></h4><div class="sm muted">${esc(m.uso)} · ${m.h} · receita vale mais ${m.rx} dias</div></div><span class="chip ${low?"warn":"ok"}">${m.qtd} comprimidos · ${d} dias</span><div class="stock${low?" low":""}"><i style="width:${Math.min(100,m.qtd/60*100)}%"></i></div><div class="dots" title="Últimos 7 dias">${m.adh.map(a=>`<i class="${a?"":"x"}"></i>`).join("")}</div><button class="pill sm" data-a="refill" data-i="${i}">Registrar compra</button></div>`}).join("")}</div></section>
+  <div class="col c4">
+  <section class="card" style="flex-direction:row;align-items:center;color:var(--brand)">${ring(adh()/100)}<div style="color:var(--ink)"><h3 style="font:700 16px var(--display);margin:0">Doses tomadas</h3><p class="sm muted" style="margin:4px 0 0">Últimos 7 dias, todos os remédios. Cada quadrado é um dia.</p></div></section>
+  <section class="card"><h3>Lista para a farmácia</h3><div class="list">${shop.map(m=>`<div class="row"><span class="ty">${ic("pill")}</span><div class="d"><b>${esc(m.n)} ${esc(m.dose)}</b><span>Acaba em ${Math.floor(m.qtd/m.dia)} dias</span></div></div>`).join("")||'<p class="muted m0">Nenhum remédio perto de acabar.</p>'}</div></section>
+  <section class="card"><h3>Novo remédio</h3><form class="add" data-f="med"><input id="md-n" placeholder="Nome" required maxlength="30"><input id="md-d" placeholder="Dose" class="narrow" required maxlength="14"><input id="md-h" type="time" class="narrow" required value="08:00"><input id="md-q" placeholder="Qtd. na caixa" inputmode="numeric" class="narrow" required><button class="btn">Adicionar</button></form><p class="sm muted m0">O horário entra na rotina de todos os dias.</p></section></div></div>`},
+escala(){const mon=-DOW;return `<div class="grid"><section class="card c8"><h3>Esta semana <small>toque em um dia para passar o turno</small></h3><div class="week">${S.week.map((k,i)=>`<button class="day${i===DOW?" today":""}" data-a="day" data-i="${i}" aria-label="${DAYS[i]}: ${P[k].n}">${DAYS[i]}<b>${addD(mon+i).getDate()}</b>${av(k)}</button>`).join("")}</div>
+  <span class="lbl">Semana que vem</span><div class="week">${S.next.map((k,i)=>`<button class="day" data-a="nday" data-i="${i}" aria-label="${DAYS[i]}: ${P[k].n}">${DAYS[i]}<b>${addD(mon+7+i).getDate()}</b>${av(k)}</button>`).join("")}</div>
+  <div class="list"><div class="row">${av("r")}<div class="d"><b>Rosa, cuidadora</b><span>Terças e quintas, das 8h às 14h, junto com quem está no turno</span></div><span class="chip br">Contratada</span></div></div></section>
+  <div class="col c4">
+  <section class="card"><h3>Balança do cuidado</h3><div class="chips">${[["dias","Dias"],["tarefas","Tarefas"],["gastos","Gastos"]].map(b=>`<button class="chip" data-a="balby" data-v="${b[0]}" aria-pressed="${S.balBy===b[0]}">${b[1]}</button>`).join("")}</div>${balHtml()}</section>
+  <section class="card"><h3>Pedidos de troca</h3>${S.swaps.length?S.swaps.map((s,i)=>`<div class="entry">${av(s.from)}<div style="flex:1"><small>${P[s.from].n} · ${DAYS[s.day]}</small><p>${esc(s.why)}</p><div class="chips"><button class="pill sm dark" data-a="swapok" data-i="${i}">Eu assumo</button><button class="pill sm" data-a="swapno" data-i="${i}">Agora não</button></div></div></div>`).join(""):'<p class="muted m0">Nenhum pedido aberto.</p>'}</section></div></div>`},
+saude(){const m=S.vit[S.metric],lv=last(m.v),avg=m.v.reduce((a,b)=>a+b,0)/m.v.length,bad=lv>=m.hi||lv<=m.lo;
+  return `<div class="grid"><section class="card c8"><h3>${m.n} <small>últimos 14 dias</small></h3><div class="chips">${Object.keys(S.vit).map(k=>`<button class="chip" data-a="metric" data-v="${k}" aria-pressed="${S.metric===k}">${S.vit[k].n}</button>`).join("")}</div>
+  <div class="stats"><div class="stat"><span class="lbl">Hoje</span><b>${num(lv)}${m.v2?`<small>/${last(m.v2)}</small>`:""} <small>${m.u}</small></b></div><div class="stat"><span class="lbl">Média</span><b>${num(Math.round(avg*10)/10)} <small>${m.u}</small></b></div><div class="stat"><span class="lbl">Situação</span><span><span class="chip ${bad?"warn":"ok"}">${bad?"Fora da faixa":"Dentro da faixa"}</span></span></div></div>
+  ${chart(m)}
+  <form class="add" data-f="vit"><input id="vt-a" placeholder="${m.v2?"Máxima (ex.: 130)":"Valor em "+m.u}" inputmode="decimal" required>${m.v2?'<input id="vt-b" placeholder="Mínima (ex.: 80)" inputmode="decimal" required>':""}<button class="btn">Registrar medição</button></form></section>
+  <section class="card c4"><h3>Resumo para o médico</h3><pre class="sum" id="sum">${esc(summary())}</pre><button class="btn" data-a="copy">Copiar resumo</button><p class="sm muted m0">Atualiza sozinho com as medições, os remédios e o diário.</p></section></div>`},
+agenda(){return `<div class="grid"><section class="card c8"><h3>Próximas consultas e exames</h3><div class="list">${S.appts.map(apptRow).join("")}</div></section>
+  <div class="col c4"><section class="card"><h3>Marcar consulta</h3><form class="add" data-f="appt"><input id="ap-b" placeholder="Especialidade ou exame" required maxlength="40"><input id="ap-doc" placeholder="Médico ou local" required maxlength="40"><input id="ap-d" type="number" min="1" max="120" placeholder="Daqui a quantos dias" required><input id="ap-h" type="time" class="narrow" required value="10:00"><button class="btn">Marcar</button></form></section>
+  <section class="card"><h3>Quem leva</h3><div class="list">${FAM.map(k=>`<div class="row">${av(k)}<div class="d"><b>${P[k].n}</b></div><span class="money">${S.appts.filter(p=>p.by===k).length} consultas</span></div>`).join("")}</div></section></div></div>`},
+companhia(){const cnt=k=>S.contacts.filter(c=>c.by===k).length,col=["","var(--bad)","var(--m4)","var(--ok)"];
+  return `<div class="grid"><section class="card c7"><h3>Humor da semana <small>registrado por ela ou por quem cuida</small></h3><div class="moods">${S.moods.map((m,i)=>`<div><i style="background:${col[m]}"></i>${DAYS[(DOW+1+i)%7]}</div>`).join("")}</div>
+  <span class="lbl">Como ela está hoje?</span><div class="chips">${[[3,"Bem"],[2,"Regular"],[1,"Mal"]].map(o=>`<button class="chip" data-a="mood" data-v="${o[0]}" aria-pressed="${S.moodToday===o[0]}">${o[1]}</button>`).join("")}</div>
+  <span class="lbl" style="margin-top:8px">Ideias para hoje</span><div class="list">${S.ideas.map((d,i)=>`<div class="row"><span class="ty">${ic("heart")}</span><div class="d"><b>${esc(d[0])}</b><span>${esc(d[1])}</span></div>${d[2]?'<span class="chip ok">Na rotina</span>':`<button class="pill sm" data-a="idea" data-i="${i}">Pôr na rotina</button>`}</div>`).join("")}</div></section>
+  <section class="card c5"><h3>Contato da família <small>últimos 7 dias</small></h3><div class="list">${Object.keys(P).filter(k=>k.length===1).map(k=>`<div class="row">${av(k)}<div class="d"><b>${P[k].n}</b><span>${cnt(k)?cnt(k)+" contato"+(cnt(k)>1?"s":""):"Sem contato esta semana"}</span></div></div>`).join("")}</div>
+  <form class="add" data-f="contact"><select id="ct-k"><option>Ligação</option><option>Chamada de vídeo</option><option>Visita</option><option>Passeio</option></select><button class="btn">Registrar meu contato</button></form>
+  <div class="hint">${S.contacts.length>=7?"<b>Ela teve companhia todos os dias.</b>":"<b>Meta da família:</b> um contato por dia. Faltam "+(7-S.contacts.length)+" nesta semana."}</div>
+  <div class="list">${S.contacts.slice(0,4).map(c=>`<div class="row">${av(c.by,"xs")}<div class="d"><span>${P[c.by].n} · ${c.k} · ${c.w}</span></div></div>`).join("")}</div></section></div>`},
+casa(){const ok=S.home.filter(h=>h[1]).length;return `<div class="grid"><section class="card c8"><h3>Casa preparada contra quedas <small>${ok} de ${S.home.length} itens</small></h3><div class="list">${S.home.map((h,i)=>`<div class="row${h[1]?" done":""}"><div class="d"><b>${esc(h[0])}</b></div><button class="chk" data-a="home" data-i="${i}" aria-label="${esc(h[0])}">✓</button></div>`).join("")}</div></section>
+  <div class="col c4"><section class="card" style="flex-direction:row;align-items:center;color:${ok>=8?"var(--ok)":"var(--warn)"}">${ring(ok/S.home.length)}<div style="color:var(--ink)"><h3 style="font:700 16px var(--display);margin:0">${ok===S.home.length?"Casa segura":ok>=8?"Quase lá":"Ainda há riscos"}</h3><p class="sm muted" style="margin:4px 0 0">${S.home.length-ok} itens para resolver. Um em cada quatro idosos cai ao menos uma vez por ano.</p></div></section>
+  <section class="card"><h3>Registro de quedas <small>${S.falls.length} em 12 meses</small></h3><div class="list">${S.falls.map(f=>`<div class="row"><span class="ty">${ic("alert")}</span><div class="d"><b>${f.w}</b><span>${esc(f.x)}</span></div></div>`).join("")}</div><form class="add" data-f="fall"><input id="fl-x" placeholder="Onde e como foi" required maxlength="70"><button class="btn ghost">Registrar queda</button></form></section></div></div>`},
+gastos(){const s=settle(),cats={};S.costs.forEach(c=>cats[c.cat]=(cats[c.cat]||0)+c.v);const mx=Math.max(...Object.values(cats));
+  return `<div class="grid"><section class="card c8"><h3>Gastos de ${MES[NOW.getMonth()]} <small>${brl(s.total)} no total</small></h3><form class="add" data-f="cost"><input id="cs-b" placeholder="O que foi comprado" required maxlength="40"><select id="cs-c" class="narrow"><option>Remédios</option><option>Saúde</option><option>Cuidadora</option><option>Casa</option><option>Alimentação</option><option>Transporte</option></select><input id="cs-v" placeholder="Valor" inputmode="decimal" class="narrow" required><button class="btn">Lançar</button></form>
+  <div class="list">${S.costs.map(x=>`<div class="row">${av(x.by)}<div class="d"><b>${esc(x.b)}</b><span>${x.cat} · pago por ${P[x.by].n}</span></div><span class="money">${brl(x.v)}</span></div>`).join("")}</div></section>
+  <div class="col c4"><section class="card"><h3>Acerto do mês</h3><div class="stat"><b>${brl(s.each)}</b><span class="muted sm">para cada um dos três filhos</span></div>${s.lines.length?s.lines.map(l=>`<div class="entry">${av(l[0])}<div><small>${P[l[0]].n} paga para ${P[l[1]].n}</small><p class="m0"><b>${brl(l[2])}</b></p></div></div>`).join(""):'<div class="al ok">'+ic("check")+'<span>Tudo acertado entre vocês.</span></div>'}</section>
+  <section class="card"><h3>Por categoria</h3><div class="bal">${Object.keys(cats).sort((a,b)=>cats[b]-cats[a]).map(k=>`<div class="barr"><span class="n" style="width:92px">${k}</span><span class="tr"><i style="width:${cats[k]/mx*100}%;background:var(--brand)"></i></span><span class="v">${brl(cats[k])}</span></div>`).join("")}</div></section></div></div>`},
+diario(){const tags=["Todos","Saúde","Humor","Recado médico","Alimentação"],l=S.notes.filter(n=>S.tag==="Todos"||n.tag===S.tag);
+  return `<div class="grid"><section class="card c8"><h3>Diário do cuidado</h3><form class="add" data-f="note"><input id="nt-x" placeholder="Como ela está hoje?" required maxlength="160"><select id="nt-t" class="narrow" style="flex-basis:150px">${tags.slice(1).map(t=>`<option>${t}</option>`).join("")}</select><button class="btn">Anotar</button></form>
+  <div class="chips">${tags.map(t=>`<button class="chip" data-a="tag" data-v="${t}" aria-pressed="${S.tag===t}">${t}</button>`).join("")}</div>
+  ${l.map(n=>`<div class="entry">${av(n.by)}<div><small>${esc(P[n.by].n)} · ${n.w}</small><p>${esc(n.x)}</p><span class="chip br">${n.tag}</span></div></div>`).join("")||'<p class="muted m0">Nenhuma anotação com essa etiqueta.</p>'}</section>
+  <section class="card c4"><h3>Recados do médico</h3><div class="list">${S.notes.filter(n=>n.tag==="Recado médico").map(n=>`<div class="row"><span class="ty">${ic("book")}</span><div class="d"><b>${esc(n.x)}</b><span>${esc(P[n.by].n)} · ${n.w}</span></div></div>`).join("")}</div></section></div>`},
+docs(){return `<div class="grid"><section class="card c5"><h3>Ficha de emergência</h3><dl class="kv"><dt>Nome</dt><dd>Lúcia Maria Almeida, 78 anos</dd><dt>Tipo sanguíneo</dt><dd>O positivo</dd><dt>Alergias</dt><dd>Dipirona, penicilina</dd><dt>Condições</dt><dd>Pressão alta, diabetes tipo 2, artrose no joelho</dd><dt>Remédios</dt><dd>${S.meds.map(m=>esc(m.n)).join(", ")}</dd><dt>Plano de saúde</dt><dd>Vida Plena · 0042 7781 5530</dd><dt>Médico</dt><dd>Dr. Renato Vasques, cardiologista</dd><dt>Endereço</dt><dd>Rua das Acácias, 218, ap. 32</dd></dl><button class="pill sos" data-a="sos" style="align-self:flex-start">Acionar SOS</button><p class="sm muted m0">No SOS, toda a família recebe o aviso com esta ficha.</p></section>
+  <section class="card c7"><h3>Documentos <small>${S.docs.length} guardados</small></h3><div class="list">${S.docs.map(d=>`<div class="row"><span class="ty">${ic("file")}</span><div class="d"><b>${esc(d[0])}</b><span>${d[1]==null?"Sem vencimento":"Vale por mais "+d[1]+" dias"}</span></div>${d[1]!=null&&d[1]<=30?'<span class="chip warn">Renovar</span>':'<span class="chip ok">Em dia</span>'}</div>`).join("")}</div><form class="add" data-f="doc"><input id="dc-n" placeholder="Nome do documento" required maxlength="50"><input id="dc-v" type="number" min="0" placeholder="Validade em dias (opcional)" style="flex-basis:210px"><button class="btn">Guardar</button></form></section></div>`},
+familia(){return `<div class="grid"><section class="card c7"><h3>Quem cuida da Dona Lúcia</h3><div class="list">${S.members.map(m=>`<div class="row">${av(m[0],"lg")}<div class="d"><b>${esc(P[m[0]].n)}</b><span>${esc(P[m[0]].r)}</span></div><span class="chip ${m[1]==="Convite enviado"?"warn":"br"}">${m[1]}</span></div>`).join("")}</div><form class="add" data-f="invite"><input id="iv-n" placeholder="Nome" required maxlength="24"><select id="iv-r" class="narrow" style="flex-basis:180px"><option>Familiar</option><option>Cuidador contratado</option><option>Vizinho ou amigo</option></select><button class="btn">Convidar</button></form></section>
+  <div class="col c5"><section class="card"><h3>Avisos</h3><div class="list">${Object.keys(S.notif).map(k=>`<div class="row"><div class="d"><b>${k}</b></div><button class="toggle" role="switch" aria-checked="${S.notif[k]}" data-a="notif" data-v="${k}" aria-label="${k}"></button></div>`).join("")}</div></section>
+  <section class="card"><h3>Plano Família <small>R$ 24,90 por mês</small></h3><p class="sm muted m0">Familiares ilimitados, histórico completo, resumo para o médico e avisos em tempo real. Dividido entre três, sai por R$ 8,30 para cada um.</p></section></div></div>`}
+};
+function summary(){const pa=S.vit.pa,gl=S.vit.gl,avg=a=>Math.round(a.reduce((x,y)=>x+y,0)/a.length);
+  return `Lúcia Maria Almeida, 78 anos\nPeríodo: últimos 14 dias\n\nPressão média: ${avg(pa.v)} por ${avg(pa.v2)} mmHg (hoje ${last(pa.v)} por ${last(pa.v2)})\nGlicemia média: ${avg(gl.v)} mg/dL\nPeso: ${num(S.vit.pe.v[0])} → ${num(last(S.vit.pe.v))} kg\nSono médio: ${num(Math.round(S.vit.so.v.reduce((x,y)=>x+y,0)/S.vit.so.v.length*10)/10)} h por noite\nDoses tomadas: ${adh()}% em 7 dias\nQuedas em 12 meses: ${S.falls.length}\n\nObservações da família:\n${S.notes.filter(n=>n.tag==="Saúde"||n.tag==="Recado médico").slice(0,3).map(n=>"• "+n.x).join("\n")}`}
+function easyHtml(){const nx=S.tasks.find(t=>t.ty==="remedio"&&!t.by),hr=NOW.getHours();
+  return `<div class="easy"><div class="in"><button class="pill" data-a="easy" style="align-self:flex-start">Voltar para a família</button>
+  <h1>${hr<12?"Bom dia":hr<18?"Boa tarde":"Boa noite"}, Lúcia</h1><p class="big">${longDate[0].toUpperCase()+longDate.slice(1)}. Hoje quem está com a senhora é ${P[S.week[DOW]].n}.</p>
+  ${nx?`<button class="big-btn go" data-a="easymed">${ic("pill")}<span>Já tomei o remédio das ${nx.t}<br><small style="font-weight:500">${esc(nx.b)}</small></span></button>`:`<div class="big-btn">${ic("check")}<span>Remédios de hoje tomados</span></div>`}
+  <p class="big">Como a senhora está hoje?</p><div class="three">${[[3,"Bem"],[2,"Mais ou menos"],[1,"Mal"]].map(o=>`<button class="big-btn" data-a="mood" data-v="${o[0]}" aria-pressed="${S.moodToday===o[0]}">${ic(o[0]===3?"smile":o[0]===2?"heart":"alert")}${o[1]}</button>`).join("")}</div>
+  <p class="big">Quero falar com</p><div class="three">${FAM.map(k=>`<button class="big-btn" data-a="askcall" data-v="${k}" aria-pressed="${S.callAsk===k}">${av(k,"lg")}${P[k].n}</button>`).join("")}</div>
+  <button class="big-btn help" data-a="sos">${ic("alert")}Preciso de ajuda</button></div></div>`}
+function paintLayer(){let h="";
+  if(S.easy)h+=easyHtml();
+  if(S.pop==="bell"){const a=alerts();h+=`<div class="card pop"><h3>Avisos <small>${a.length}</small></h3><div class="alerts">${a.map(alHtml).join("")||'<p class="muted m0">Nenhum aviso aberto.</p>'}</div></div>`}
+  if(S.pop==="more")h+=`<div class="overlay" data-a="close"><div class="modal"><h2>Todas as áreas</h2><div class="more">${SECTIONS.flatMap(g=>g[1]).map(s=>`<button class="pill" data-go="${s[0]}">${ic(s[2])}${s[1]}</button>`).join("")}</div><button class="pill" data-a="easy">Tela da Dona Lúcia</button></div></div>`;
+  if(S.pop==="sos")h+=`<div class="overlay"><div class="modal"><h2>SOS enviado para a família</h2><div class="al bad">${ic("alert")}<span>Marina, Paulo, Carla e Rosa receberam o aviso com a ficha de emergência.</span></div><dl class="kv"><dt>Alergias</dt><dd>Dipirona, penicilina</dd><dt>Condições</dt><dd>Pressão alta, diabetes tipo 2</dd><dt>Plano</dt><dd>Vida Plena · 0042 7781 5530</dd><dt>SAMU</dt><dd>192</dd></dl><div class="chips"><button class="btn" data-a="sosok">Estou indo até ela</button><button class="btn ghost" data-a="soscancel">Foi engano, cancelar</button></div></div></div>`;
+  if(S.toast)h+=`<div class="toast" role="status">${esc(S.toast)}</div>`;
+  $("layer").innerHTML=h}
+function render(keep){
+  const a=alerts().length,sc=$("view").scrollTop;
+  $("ttl").textContent=TITLE[S.tab]; $("sub").textContent=S.tab==="inicio"?longDate[0].toUpperCase()+longDate.slice(1):"Dona Lúcia · Família Almeida";
+  $("bell").innerHTML=ic("bell")+(a?`<b>${a}</b>`:"");
+  $("nav").innerHTML=SECTIONS.map(g=>`<h4>${g[0]}</h4>`+g[1].map(s=>`<button data-go="${s[0]}" ${s[0]===S.tab?'aria-current="page"':""}>${ic(s[2])}${s[1]}${s[0]==="inicio"&&a?`<span class="n">${a}</span>`:""}</button>`).join("")).join("");
+  $("switch").innerHTML=Object.keys(P).filter(k=>k.length===1).map(k=>`<button data-me="${k}" aria-pressed="${k===S.me}" aria-label="Entrar como ${P[k].n}">${av(k)}</button>`).join("");
+  $("tabbar").innerHTML=[["inicio","Início","home"],["rotina","Rotina","list"],["remedios","Remédios","pill"],["saude","Saúde","pulse"]].map(s=>`<button data-go="${s[0]}" ${s[0]===S.tab?'aria-current="page"':""}>${ic(s[2])}${s[1]}</button>`).join("")+`<button data-a="more">${ic("grid")}Mais</button>`;
+  $("view").innerHTML=V[S.tab](); $("view").scrollTop=keep?sc:0; paintLayer();
+}
+const cyc=k=>FAM[(FAM.indexOf(k)+1)%3];
+const A={
+  task(i){const t=S.tasks[i];t.by=t.by?null:S.me;if(t.by){if(t.med!=null)S.meds[t.med].qtd=Math.max(0,S.meds[t.med].qtd-1);log(S.me,"marcou "+t.b)}else if(t.med!=null)S.meds[t.med].qtd++},
+  warn(){S.warned=true;toast("Paulo, Carla e Rosa foram avisados")},
+  refill(i){S.meds[i].qtd+=30;log(S.me,"comprou "+S.meds[i].n);toast(S.meds[i].n+": 30 comprimidos adicionados")},
+  take(i){S.appts[i].by=S.me;log(S.me,"vai levar à consulta: "+S.appts[i].b);toast("Combinado. Você leva a Dona Lúcia.")},
+  day(i){S.week[i]=cyc(S.week[i])}, nday(i){S.next[i]=cyc(S.next[i])},
+  balby(_,v){S.balBy=v}, metric(_,v){S.metric=v}, tag(_,v){S.tag=v},
+  swapok(i){const s=S.swaps.splice(i,1)[0];S.week[s.day]=FAM.includes(S.me)?S.me:"m";log(S.me,"assumiu o turno de "+DAYS[s.day]);toast("Turno de "+DAYS[s.day]+" assumido")},
+  swapno(i){S.swaps.splice(i,1)},
+  water(i){S.water=i+1===S.water?i:i+1},
+  mood(_,v){S.moodToday=+v;S.moods[6]=+v;toast("Humor de hoje registrado")},
+  idea(i){const d=S.ideas[i];d[2]=true;S.tasks.push({t:"17:30",b:d[0],s:d[1],ty:"atividade",by:null});sortTasks();toast("Adicionado à rotina de hoje")},
+  home(i){S.home[i][1]=!S.home[i][1]},
+  notif(_,v){S.notif[v]=!S.notif[v]},
+  copy(){const t=summary(),sel=()=>{const r=document.createRange();r.selectNodeContents($("sum"));const s=getSelection();s.removeAllRanges();s.addRange(r);toast("Resumo selecionado. Agora é só copiar.");paintLayer()};try{navigator.clipboard.writeText(t).then(()=>{toast("Resumo copiado");paintLayer()},sel)}catch(e){sel()}return true},
+  easy(){S.easy=!S.easy;S.pop=null}, bell(){S.pop=S.pop==="bell"?null:"bell"}, more(){S.pop="more"}, close(){S.pop=null},
+  sos(){S.sos=true;S.pop="sos";S.feed.unshift([S.easy?"m":S.me,S.easy?"recebeu um pedido de ajuda":"acionou o SOS","agora"])},
+  sosok(){S.sos=false;S.pop=null;log(S.me,"está indo até a Dona Lúcia");toast("A família foi avisada de que você está a caminho")},
+  soscancel(){S.sos=false;S.pop=null;toast("SOS cancelado. A família foi avisada.")},
+  easymed(){const t=S.tasks.find(t=>t.ty==="remedio"&&!t.by);if(t){t.by=S.week[DOW];if(t.med!=null)S.meds[t.med].qtd=Math.max(0,S.meds[t.med].qtd-1);S.feed.unshift([S.week[DOW],"recebeu a confirmação: "+t.b,"agora"]);toast("Muito bem. A família já sabe.")}},
+  askcall(_,v){S.callAsk=v;toast(P[v].n+" recebeu o seu pedido")}, called(){S.callAsk=null;S.contacts.unshift({by:S.me,k:"Ligação",w:"Agora"});toast("Ligação registrada")}
+};
+const F={
+  task(){S.tasks.push({t:$("tk-h").value,b:$("tk-b").value.trim(),s:"Adicionada por "+P[S.me].n,ty:$("tk-ty").value,by:null});sortTasks();toast("Tarefa adicionada")},
+  med(){const q=parseInt($("md-q").value,10);if(!(q>0)){$("md-q").value="";$("md-q").placeholder="Só números";return false}const n=$("md-n").value.trim(),d=$("md-d").value.trim(),h=$("md-h").value;S.meds.push({n,dose:d,uso:"Adicionado por "+P[S.me].n,h,qtd:q,dia:1,adh:[1,1,1,1,1,1,1],rx:90});S.tasks.push({t:h,b:n+" "+d,s:"1 dose",ty:"remedio",med:S.meds.length-1,by:null});sortTasks();toast("Remédio adicionado à rotina")},
+  vit(){const m=S.vit[S.metric],p=id=>parseFloat($(id).value.replace(",",".")),a=p("vt-a"),b=m.v2?p("vt-b"):1;if(!(a>0)){$("vt-a").value="";$("vt-a").placeholder="Digite um número";return false}if(!(b>0)){$("vt-b").value="";$("vt-b").placeholder="Digite um número";return false}m.v.push(a);m.v.shift();if(m.v2){m.v2.push(b);m.v2.shift()}log(S.me,"registrou "+m.n.toLowerCase());toast("Medição registrada")},
+  appt(){S.appts.push({d:+$("ap-d").value,h:$("ap-h").value,b:$("ap-b").value.trim(),doc:$("ap-doc").value.trim(),loc:"local a confirmar",by:null,q:[]});S.appts.sort((a,b)=>a.d-b.d);toast("Consulta marcada")},
+  q(i){S.appts[i].q.push($("q"+i).value.trim())},
+  cost(){const v=parseFloat($("cs-v").value.replace(/[^\d,.]/g,"").replace(",","."));if(!(v>0)){$("cs-v").value="";$("cs-v").placeholder="Ex.: 35,90";return false}if(!FAM.includes(S.me)){toast("Só os familiares lançam gastos");paintLayer();return false}const b=$("cs-b").value.trim();S.costs.unshift({b,v,by:S.me,cat:$("cs-c").value});log(S.me,"lançou "+b);toast("Gasto lançado e acerto recalculado")},
+  note(){S.notes.unshift({by:S.me,w:"Agora",tag:$("nt-t").value,x:$("nt-x").value.trim()});S.tag="Todos";log(S.me,"escreveu no diário")},
+  contact(){S.contacts.unshift({by:S.me,k:$("ct-k").value,w:"Agora"});toast("Contato registrado")},
+  fall(){S.falls.unshift({w:"Hoje",x:$("fl-x").value.trim()});log(S.me,"registrou uma queda");toast("Queda registrada e família avisada")},
+  doc(){const v=$("dc-v").value;S.docs.unshift([$("dc-n").value.trim(),v===""?null:+v]);toast("Documento guardado")},
+  invite(){const n=$("iv-n").value.trim(),k="x"+S.members.length;P[k]={n,c:"var(--muted)",r:$("iv-r").value};S.members.push([k,"Convite enviado"]);toast("Convite enviado para "+n)}
+};
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-go],[data-me],[data-a]");
+  if(!b){if(S.pop==="bell"&&!e.target.closest(".pop")){S.pop=null;paintLayer()}return}
+  if(b.dataset.a==="close"&&e.target!==b)return;
+  if(b.dataset.me){S.me=b.dataset.me;render(true);return}
+  if(b.dataset.a){if(A[b.dataset.a](b.dataset.i!=null?+b.dataset.i:null,b.dataset.v))return;render(true);return}
+  if(b.dataset.go){S.tab=b.dataset.go;S.pop=null;render()}
+});
+document.addEventListener("submit",e=>{e.preventDefault();const f=e.target.dataset.f;if(!f)return;if(F[f](e.target.dataset.i!=null?+e.target.dataset.i:null)!==false)render(true)});
+render();
+</script>
+
+</body></html>
